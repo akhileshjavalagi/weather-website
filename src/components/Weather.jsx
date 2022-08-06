@@ -3,6 +3,7 @@ import axios from "axios";
 import useGeoLocation from './UseLocation';
 import { Box, Heading, Image, Input } from '@chakra-ui/react';
 import { Grid, GridItem } from '@chakra-ui/react'
+import { Cities } from './Citeis';
 
 const Weather = () => {
 
@@ -28,7 +29,7 @@ const Weather = () => {
     },[search, location.loaded])
 
     const [currentCity, setCurrentCity] = useState("")
-    
+
     const getCity = async() =>{
         const res = await axios.get("https://ipinfo.io/city?token=d0f79999ea0e4d");
         setCurrentCity(res.data)
@@ -41,15 +42,32 @@ const Weather = () => {
 
     }
 
-    console.log("default data is",data)
+   // console.log("default data is",data)
 
     const getWeekData = async () =>{
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
             setData(res.data.list);
     }
        
-    console.log("week data is",data)
+    //console.log("week data is",data)
 
+
+    const [suggestion, setSuggestion] = useState([]);
+
+    useEffect(()=>{
+        if(search == ""){
+            setSuggestion([])
+        }else{
+            setTimeout(()=>{
+                let newSuggestions = Cities.filter(item => item.toLowerCase().indexOf(search) !== -1 ? true : false)
+                .map(item => item)
+                setSuggestion(newSuggestions);
+            },3000)
+            
+        }
+    },[search])
+
+    console.log(suggestion)
     return (
         <Box>
         <Box justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex" border="1px solid red">
@@ -61,6 +79,13 @@ const Weather = () => {
                 <Input type="text" onChange={(e)=>{
                    setSearch(e.target.value) 
                 }} defaultValue={currentCity} _hover={{ bg: "green.200", color: " white" }}/>
+                <Box w="100px" m="auto" border="1px solid red">
+                    {
+                        suggestion.map((e)=>(
+                            <h4>{e}</h4>
+                        ))
+                    }
+                </Box>
             </Box>
 
             <Box>
