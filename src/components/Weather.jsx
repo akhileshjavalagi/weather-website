@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
 import useGeoLocation from './UseLocation';
-import { useRef } from 'react';
 import { Box, Heading, Image, Input } from '@chakra-ui/react';
 import { Grid, GridItem } from '@chakra-ui/react'
 
@@ -12,23 +11,24 @@ const Weather = () => {
     const [data, setData] = useState([]);
 
     let days = ["sunday", "monday", "tuesday", "wednseday", "thursday",
-   "friday", "saturday"]; 
-    
-    
+    "friday", "saturday"]; 
+
     const location = useGeoLocation()
 
-    // const lattitude = JSON.stringify(location.coordinates.lat);
-    // const lng = JSON.stringify(location.coordinates.lng);
+    useEffect(()=>{
+       if(location.loaded == true){
+         getCity();
+       }
+    },[location.loaded ])
 
     useEffect(()=>{
-        getCity()
-    },[])
-
-    useEffect(()=>{
-        getWeekData()
-    },[search])
+        if(location.loaded==true){
+            getWeekData();
+        }
+    },[search, location.loaded])
 
     const [currentCity, setCurrentCity] = useState("")
+    
     const getCity = async() =>{
         const res = await axios.get("https://ipinfo.io/city?token=d0f79999ea0e4d");
         setCurrentCity(res.data)
@@ -46,12 +46,10 @@ const Weather = () => {
     const getWeekData = async () =>{
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
             setData(res.data.list);
-            
-        }
-        console.log("week data is",data)
+    }
+       
+    console.log("week data is",data)
 
-     
-    
     return (
         <Box>
         <Box justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex" border="1px solid red">
@@ -85,25 +83,20 @@ const Weather = () => {
             {
                 data.length > 0 ? 
                 data.map((e)=>(
-                    <Box _hover={{ bg: "green.500", color: " white" }} mt="10px" borderRadius="10px" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' w="130px" padding="1">
+                    <Box  _hover={{ bg: "green.500", color: " white" }} mt="10px" borderRadius="10px" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' w="130px" padding="1">
                     <Heading fontFamily="monospace" size="sm">{e.main.temp}°C</Heading>
                     <Image src="https://weatherapp-swanand.netlify.app/img/cloudy.ac49ed24.svg"></Image>
                     <Heading size="md">Clouds</Heading>
                     </Box>
                 ))
                 : 
-                data.map((ele)=>(
-                    <Box w="100px" padding="1" >
-                    <Heading fontFamily="monospace" size="sm">{ele.main.temp}°C</Heading>
-                    <Image src="https://weatherapp-swanand.netlify.app/img/cloudy.ac49ed24.svg"></Image>
-                    <Heading size="md">Clouds</Heading>
-                    </Box>
-                ))
+                console.log(null)
             }
-             </Box>
+            </Box>
 
             <Box  mt="20px"  gap="5" display="flex" ml="15px" padding="5" w="200px">
                 {
+                   
                     data.length > 0 ? 
                     <>
                     <Heading padding="5" m="auto" textAlign="left" fontFamily="monospace" size="lg">{data[6].main.temp}°C</Heading>
@@ -111,11 +104,14 @@ const Weather = () => {
                     </>
                     :
                     console.log("null")
+                    
                 } 
             </Box>
 
-
-            <Grid templateColumns='repeat(2, 1fr)' gap={12} >
+            {
+                data.length > 0 ? 
+                
+                <Grid templateColumns='repeat(2, 1fr)' gap={12} >
                 <GridItem w='100%' h='50px' bg='#CBD5E0' >
                     <Heading textAlign="left"  size="md">Pressure</Heading>
                     <Heading   textAlign="left" fontFamily="monospace" size="md">{data[6].main.pressure}</Heading>
@@ -134,12 +130,13 @@ const Weather = () => {
                     <Heading textAlign="right"  size="md">6:56pm</Heading>
                 </GridItem>
             </Grid>
-
+            :
+            console.log("null")
+            }
             </Box>
-
-
         </Box>
-    );
+        
+    )
 }
 
 export default Weather;
