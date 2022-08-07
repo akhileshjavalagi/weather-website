@@ -1,20 +1,20 @@
 
-import {useRef, useState} from 'react';
+// Line graph imported from library
 import { Line } from 'react-chartjs-2';
 import { Box } from '@chakra-ui/react';
+
+// In the below line, imported all the properties of the graph
 import {Chart as ChartJS, Title, Tooltip, LineElement, Legend, CategoryScale, LinearScale, PointElement, Filler} from 'chart.js';
 ChartJS.register(
   Title, Tooltip, LineElement, Legend,
   CategoryScale, LinearScale, PointElement, Filler
 )
 
+// All data of the city is coming as value using props
 function Chart({value}){
-    
-    console.log("chart value is",value[0].main.temp)
-
-    // console.log("chart comingData is",comingData.current[0].main.temp)
   
   return( 
+    // Here I am displaying all the data into UI
     <Box style={{w:'800px', h:'800px'}}>
        <Line style={{w:'1040px', h:'200px'}} 
        data = {{
