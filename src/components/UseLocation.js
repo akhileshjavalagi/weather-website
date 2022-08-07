@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 
+// This function is for setting the location to the loading state and latittude and longtitude.
 const useGeoLocation = () => {
     const [location, setLocation] = useState({
         loaded: false,
         coordinates: { lat: "", lng: "" },
     });
 
+    // This is function is for showing the allowing the location success or not
     const onSuccess = (location) => {
         setLocation({
             loaded: true,
@@ -16,6 +18,7 @@ const useGeoLocation = () => {
         });
     };
 
+    // This funciton is for showing the error while allowing the location
     const onError = (error) => {
         setLocation({
             loaded: true,
@@ -26,6 +29,7 @@ const useGeoLocation = () => {
         });
     };
 
+    // This useEffect is for conditional statement.
     useEffect(() => {
         if (!("geolocation" in navigator)) {
             onError({
@@ -37,6 +41,7 @@ const useGeoLocation = () => {
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }, []);
 
+    // Lastly returning the location 
     return location;
 };
 

@@ -58,18 +58,21 @@ const Weather = () => {
 
     const [suggestion, setSuggestion] = useState([]); // This is the suggestion to the users to select the city.
 
+    // This useEffect is for debouncing funciton and filtering the cities.
     useEffect(()=>{
         if(search == ""){
             setSuggestion([])
         }else{
+            // Below is the timout is there, it show the result after 1 second
             setTimeout(()=>{
                 let newSuggestions = Cities.filter(item => item.toLowerCase().indexOf(search) !== -1 ? true : false)
                 .map(item => item)
                 setSuggestion(newSuggestions);
-            },1000)
+            },2000)
         }
     },[search])
     
+    // This funciton is to fetch the city which is coming from the suggestions.
     const fetchParticlarCity = async(e,id) =>{
         setSearch(e)
         const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`)
@@ -77,7 +80,8 @@ const Weather = () => {
     }
     return (
         <Box>
-        <Heading color="tomato" ml="420px">WELCOME TO WEATHER APPLICATION</Heading>
+        {/* This is the heading of the application */}
+        <Heading color="tomato" ml="420px">WELCOME TO WEATHER APPLICATION</Heading> 
         <Box ml="250px" justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex">
             <Box>
                 <Image w="40px" src="https://media.istockphoto.com/vectors/map-pin-vector-glyph-icon-vector-id1193451471?k=20&m=1193451471&s=612x612&w=0&h=ve7JRaMvw6L1HBiDOTVwfbhHALPPH-nCMCgG0Z_z5NY="></Image>

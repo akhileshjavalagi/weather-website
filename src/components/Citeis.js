@@ -1,3 +1,5 @@
+
+// These all are the cities for searching in the input box.
 export  const Cities = [
 	"Achalpur",
   "Achhnera",
