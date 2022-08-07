@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import './App.css'
-import Weather from './components/Weather'
-// import Test from "./components/Test"
-function App() {
 
-  return (
+//import BarChart from './components/BarChart'
+import Weather from './components/Weather'
+
+function App(){
+
+  return( 
     <div className="App">
       <Weather/>
-      {/* <Test/> */}
-    </div>
+      {/* <BarChart/> */}
+   </div>
   )
-}
+  }
 
 export default App

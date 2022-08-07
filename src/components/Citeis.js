@@ -65,6 +65,7 @@ export  const Cities = [
   "Ballari",
   "Balurghat",
   "Bankura",
+  "Banagalore",
   "Bapatla",
   "Baramula",
   "Barbil",

@@ -7,51 +7,56 @@ import { Cities } from './Citeis';
 
 const Weather = () => {
 
-    const [search, setSearch] = useState(null);
+    const [search, setSearch] = useState(null); //I taken the search state as null at the beggining
 
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([]); //I taken the data as an empty array.
 
     let days = ["sunday", "monday", "tuesday", "wednseday", "thursday",
-    "friday", "saturday"]; 
+    "friday", "saturday"]; // I taken days array to show the days in the UI
 
-    const location = useGeoLocation()
+    const location = useGeoLocation() // I imported the geolocation file and assigned to the variable.
 
+    // This useEffect is for get the city name 
     useEffect(()=>{
-       if(location.loaded == true){
+       if(location.loaded == true){ // Here I put condition, if the location is true then only getCity() function should be run.
          getCity();
        }
     },[location.loaded ])
 
+    // This useEffect is for get the week data of the fetched city.
     useEffect(()=>{
         if(location.loaded==true){
-            getWeekData();
+            getWeekData(); // This is the function to get the data of the city.
         }
     },[search, location.loaded])
 
-    const [currentCity, setCurrentCity] = useState("")
+    const [currentCity, setCurrentCity] = useState("") // I taken this state to fetch the current city data.
 
+    //This function will fetch the data of the city from the below API
     const getCity = async() =>{
         const res = await axios.get("https://ipinfo.io/city?token=d0f79999ea0e4d");
-        setCurrentCity(res.data)
-        getTemp(res.data);
+        setCurrentCity(res.data) // Fetched city will set to the currentcity.
+        getTemp(res.data); 
     }
 
+    // This funciton is to get the week data of the currentcity
     const getTemp = async(dataDefault) =>{
         const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${dataDefault}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
         setData(res.data.list)
 
     }
 
-    console.log("default data is",data)
+    //console.log("default data is",data)
 
+    //This function is to get the week data for the searched city.
     const getWeekData = async () =>{
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
             setData(res.data.list);
     }
        
-    console.log("week data is",data)
+    //console.log("week data is",data)
 
-    const [suggestion, setSuggestion] = useState([]);
+    const [suggestion, setSuggestion] = useState([]); // This is the suggestion to the users to select the city.
 
     useEffect(()=>{
         if(search == ""){
@@ -69,11 +74,11 @@ const Weather = () => {
         setSearch(e)
         const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`)
         setData(res.data.list)
-        //console.log(res.data.list)
     }
     return (
         <Box>
-        <Box justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex" border="1px solid red">
+        <Heading color="tomato" ml="420px">WELCOME TO WEATHER APPLICATION</Heading>
+        <Box ml="250px" justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex">
             <Box>
                 <Image w="40px" src="https://media.istockphoto.com/vectors/map-pin-vector-glyph-icon-vector-id1193451471?k=20&m=1193451471&s=612x612&w=0&h=ve7JRaMvw6L1HBiDOTVwfbhHALPPH-nCMCgG0Z_z5NY="></Image>
             </Box>
@@ -82,23 +87,26 @@ const Weather = () => {
                 <Input type="text" onChange={(e)=>{
                    setSearch(e.target.value) 
                 }} 
-                value = {search}
+                value =  {search}
                 _hover={{ bg: "green.200", color: " white" }}/>
-                <Box w="100px" m="auto" border="1px solid red">
+                <Box w="900px" m="auto">
                     {
                         suggestion.map((e, index)=>(
-                            <h4 onClick={()=>fetchParticlarCity(e,index)}>{e}</h4>
+                            <Box _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' onClick={()=>fetchParticlarCity(e,index)}>
+                                <Heading textAlign="center">{e}</Heading>   
+                            </Box>
                         ))
                     }
                 </Box>
             </Box>
-
             <Box>
                 <Image onClick={getTemp} w="40px" src="https://i.pinimg.com/736x/fa/0e/7b/fa0e7b992eff03c576727e95c746005c.jpg"></Image>
             </Box>
         </Box>
-            
-            <Box  border="1px solid red" w="1000px" h="700px" margin="auto">
+            <Box  w="1000px" h="700px" ml="250px">
+            {
+                !search ? <Heading>{currentCity}</Heading> : <Heading>{search}</Heading>  
+            }
               <Box gap="10px"  mt="50px" display="flex" justifyContent="space-between">
                 {
                    days.map((e)=>(
@@ -126,21 +134,18 @@ const Weather = () => {
 
             <Box  mt="20px"  gap="5" display="flex" ml="15px" padding="5" w="200px">
                 {
-                   
                     data.length > 0 ? 
                     <>
-                    <Heading padding="5" m="auto" textAlign="left" fontFamily="monospace" size="lg">{data[0].main.temp}°C</Heading>
+                    <Heading padding="5" m="auto" textAlign="left" fontFamily="monospace" size="lg">{data[1].main.temp}°C</Heading>
                     <Image m="auto" w="70px" src="https://weatherapp-swanand.netlify.app/img/cloudy.ac49ed24.svg"></Image>
                     </>
                     :
-                    console.log("null")
-                    
+                    console.log("null")   
                 } 
             </Box>
 
             {
                 data.length > 0 ? 
-                
                 <Grid templateColumns='repeat(2, 1fr)' gap={12} >
                 <GridItem w='100%' h='50px' bg='#CBD5E0' >
                     <Heading textAlign="left"  size="md">Pressure</Heading>
@@ -151,10 +156,12 @@ const Weather = () => {
                     <Heading textAlign="right"  size="md">Humidity</Heading>
                     <Heading   textAlign="right" fontFamily="monospace" size="md">{data[6].main.humidity}</Heading>
                 </GridItem>
+
                 <GridItem w='100%' h='50px' bg='#CBD5E0'>
                     <Heading textAlign="left"  size="md">Sunrise</Heading>
                     <Heading textAlign="left"  size="md">6:12am</Heading>
                 </GridItem>
+
                 <GridItem w='100%' h='50px' bg='#CBD5E0'>
                 <Heading textAlign="right"  size="md">Sunset</Heading>
                     <Heading textAlign="right"  size="md">6:56pm</Heading>
@@ -165,7 +172,6 @@ const Weather = () => {
             }
             </Box>
         </Box>
-        
     )
 }
 
