@@ -4,6 +4,7 @@ import useGeoLocation from './UseLocation';
 import { Box, Heading, Image, Input } from '@chakra-ui/react';
 import { Grid, GridItem } from '@chakra-ui/react'
 import { Cities } from './Citeis';
+import Chart from './Chart';
 
 const Weather = () => {
 
@@ -87,6 +88,7 @@ const Weather = () => {
                 <Image w="40px" src="https://media.istockphoto.com/vectors/map-pin-vector-glyph-icon-vector-id1193451471?k=20&m=1193451471&s=612x612&w=0&h=ve7JRaMvw6L1HBiDOTVwfbhHALPPH-nCMCgG0Z_z5NY="></Image>
             </Box>
 
+            {/* This is the inputBox is to search the cities. */}
             <Box w="900px">
                 <Input type="text" onChange={(e)=>{
                    setSearch(e.target.value) 
@@ -94,8 +96,11 @@ const Weather = () => {
                 value =  {search}
                 _hover={{ bg: "green.200", color: " white" }}/>
                 <Box w="900px" m="auto">
+                    {/* Here suggestions are mapping and displaying in the UI */}
                     {
                         suggestion.map((e, index)=>(
+                            // In the Below box, It has onclick funciton which is called fetchParticlarCity. 
+                            // It acts as a button. 
                             <Box _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' onClick={()=>fetchParticlarCity(e,index)}>
                                 <Heading textAlign="center">{e}</Heading>   
                             </Box>
@@ -109,10 +114,12 @@ const Weather = () => {
         </Box>
             <Box  w="1000px" h="700px" ml="250px">
             {
+                // Below is the name of the particular city.
                 !search ? <Heading>{currentCity}</Heading> : <Heading>{search}</Heading>  
             }
               <Box gap="10px"  mt="50px" display="flex" justifyContent="space-between">
                 {
+                  // In the below map function, days are mapping which are in the top of the array.
                    days.map((e)=>(
                     <Box borderRadius="10px" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' w="150px" padding="1">
                         <Heading size="sm" fontFamily="cursive">{e}</Heading>
@@ -123,6 +130,7 @@ const Weather = () => {
             
             <Box display="flex" justifyContent="space-between">
             {
+                // This below code shows all the temparature
                 data.length > 0 ? 
                 data.map((e)=>(
                     <Box  _hover={{ bg: "green.500", color: " white" }} mt="10px" borderRadius="10px" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' w="130px" padding="1">
@@ -148,7 +156,13 @@ const Weather = () => {
                 } 
             </Box>
 
+
             {
+                data.length > 0 ? <Chart value={data}/> : console.log(null)
+            }
+            
+            {
+                // This below code shows the Pressure of the city.
                 data.length > 0 ? 
                 <Grid templateColumns='repeat(2, 1fr)' gap={12} >
                 <GridItem w='100%' h='50px' bg='#CBD5E0' >
@@ -156,6 +170,7 @@ const Weather = () => {
                     <Heading   textAlign="left" fontFamily="monospace" size="md">{data[6].main.pressure}</Heading>
                 </GridItem>
                 
+                {/* this below code shows the humidity */}
                 <GridItem w='100%' h='50px' bg='#CBD5E0'>
                     <Heading textAlign="right"  size="md">Humidity</Heading>
                     <Heading   textAlign="right" fontFamily="monospace" size="md">{data[6].main.humidity}</Heading>
