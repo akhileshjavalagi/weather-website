@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import axios from "axios";
 import useGeoLocation from './UseLocation';
 import { Box, Heading, Image, Input } from '@chakra-ui/react';
@@ -42,15 +42,14 @@ const Weather = () => {
 
     }
 
-   // console.log("default data is",data)
+    console.log("default data is",data)
 
     const getWeekData = async () =>{
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
             setData(res.data.list);
     }
        
-    //console.log("week data is",data)
-
+    console.log("week data is",data)
 
     const [suggestion, setSuggestion] = useState([]);
 
@@ -62,12 +61,16 @@ const Weather = () => {
                 let newSuggestions = Cities.filter(item => item.toLowerCase().indexOf(search) !== -1 ? true : false)
                 .map(item => item)
                 setSuggestion(newSuggestions);
-            },3000)
-            
+            },1000)
         }
     },[search])
-
-    console.log(suggestion)
+    
+    const fetchParticlarCity = async(e,id) =>{
+        setSearch(e)
+        const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`)
+        setData(res.data.list)
+        //console.log(res.data.list)
+    }
     return (
         <Box>
         <Box justifyContent="space-between" _focus={{ boxShadow: "outline" }} boxShadow='dark-lg' display="flex" border="1px solid red">
@@ -78,11 +81,13 @@ const Weather = () => {
             <Box w="900px">
                 <Input type="text" onChange={(e)=>{
                    setSearch(e.target.value) 
-                }} defaultValue={currentCity} _hover={{ bg: "green.200", color: " white" }}/>
+                }} 
+                value = {search}
+                _hover={{ bg: "green.200", color: " white" }}/>
                 <Box w="100px" m="auto" border="1px solid red">
                     {
-                        suggestion.map((e)=>(
-                            <h4>{e}</h4>
+                        suggestion.map((e, index)=>(
+                            <h4 onClick={()=>fetchParticlarCity(e,index)}>{e}</h4>
                         ))
                     }
                 </Box>
@@ -124,7 +129,7 @@ const Weather = () => {
                    
                     data.length > 0 ? 
                     <>
-                    <Heading padding="5" m="auto" textAlign="left" fontFamily="monospace" size="lg">{data[6].main.temp}°C</Heading>
+                    <Heading padding="5" m="auto" textAlign="left" fontFamily="monospace" size="lg">{data[0].main.temp}°C</Heading>
                     <Image m="auto" w="70px" src="https://weatherapp-swanand.netlify.app/img/cloudy.ac49ed24.svg"></Image>
                     </>
                     :
