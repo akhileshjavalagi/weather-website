@@ -27,7 +27,10 @@ const Weather = () => {
     // This useEffect is for get the week data of the fetched city.
     useEffect(()=>{
         if(location.loaded==true){
-            getWeekData(); // This is the function to get the data of the city.
+            const timerOut = setTimeout(() => { //Here I Declared debouncing function
+                getWeekData(); // This is the function to get the data of the city.
+           }, 3000); // API will call every 3 seconds
+            return() => clearTimeout(timerOut) //Here is the clearTimout fuction
         }
     },[search, location.loaded])
 
@@ -52,10 +55,11 @@ const Weather = () => {
     //This function is to get the week data for the searched city.
     const getWeekData = async () =>{
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=7&units=metric&appid=2336a30362a5724075c5b135b02ce940`);
+            console.log(res.data)
             setData(res.data.list);
     }
        
-    //console.log("week data is",data)
+    // console.log("week data is",data)
 
     const [suggestion, setSuggestion] = useState([]); // This is the suggestion to the users to select the city.
 
